@@ -1,0 +1,8 @@
+def fillna_with_mode(df, target_col, group_col):
+    before = df[target_col].isna().sum()
+    df.loc[df[target_col].isna(), target_col] = (
+        df.loc[df[target_col].isna(), group_col].map(
+            df.groupby(group_col)[target_col].agg(lambda x: pd.Series.mode(x)[0]))
+    )
+    print('{} out of {} values are filled with the most occurring "{}" among "{}"'
+        .format(before - df[target_col].isna().sum(), before, target_col, group_col))
